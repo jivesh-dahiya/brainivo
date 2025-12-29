@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Design Gallery | Brainivo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top, #020617, #000);
+    }
+
+    .media-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1.25rem;
+      box-shadow: 0 0 25px rgba(34,211,238,0.45);
+      cursor: pointer;
+    }
+
+    .media-card img,
+    .media-card video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .portrait {
+      aspect-ratio: 9 / 16;
+    }
+
+    .video-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 40px rgba(34,211,238,0.35);
+    }
+
+    .neon-text {
+      text-shadow: 0 0 15px #22d3ee, 0 0 40px #0ea5e9;
+    }
+
+    /* ===== MODAL ===== */
+    .media-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(14px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.3s ease;
+      z-index: 9999;
+    }
+
+    .media-modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .media-modal img,
+    .media-modal video {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 18px;
+      display: none;
+      box-shadow: 0 0 40px rgba(34,211,238,0.4);
+    }
+  </style>
+</head>
+
+<body class="text-white">
+
+<!-- NAV -->
+<header class="fixed top-0 w-full bg-black/70 backdrop-blur z-50 border-b border-cyan-500/20">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="../index.html" class="font-['Orbitron'] neon-text text-cyan-400 text-xl">
+      BRAINIVO
+    </a>
+    <a href="../index.html#work" class="text-gray-300 hover:text-cyan-400 transition">
+      ← Back to Home
+    </a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="pt-32 pb-16 text-center">
+  <h1 class="text-5xl md:text-6xl font-extrabold neon-text font-['Orbitron']">
+    Design Gallery
+  </h1>
+  <p class="mt-4 text-gray-400 max-w-xl mx-auto">
+    A curated visual collection of our digital, graphic & UI work.
+  </p>
+</section>
+
+<!-- GALLERY -->
+<section class="pb-32">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10">
+
+    <!-- IMAGE -->
+    <div class="media-card portrait media-thumb" data-type="image">
+      <img src="Yellow Retro Now Open Thrift Shop Poster.png">
+      <div class="video-overlay"></div>
+    </div>
+
+    <!-- VIDEO -->
+    <div class="media-card portrait media-thumb" data-type="video">
+      <video autoplay muted loop playsinline>
+        <source src="f16a2bd297cf2752330404216fbbd99a.mp4" type="video/mp4">
+      </video>
+      <div class="video-overlay"></div>
+    </div>
+
+    <!-- IMAGE -->
+    <div class="media-card portrait media-thumb" data-type="image">
+      <img src="EDUCATION TRAP.png">
+      <div class="video-overlay"></div>
+    </div>
+
+    <div class="media-card portrait media-thumb" data-type="image">
+      <img src="hiv.png">
+      <div class="video-overlay"></div>
+    </div>
+
+    <div class="media-card portrait media-thumb" data-type="image">
+      <img src="jjj.png">
+      <div class="video-overlay"></div>
+    </div>
+
+    <div class="media-card portrait media-thumb" data-type="image">
+      <img src="hji.png">
+      <div class="video-overlay"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MODAL (SINGLE INSTANCE) -->
+<div id="mediaModal" class="media-modal">
+  <img id="modalImage">
+  <video id="modalVideo" controls></video>
+</div>
+
+<footer class="py-6 text-center text-gray-500 border-t border-cyan-500/20">
+  © 2025 Brainivo — Visual Design Lab
+</footer>
+
+<!-- SCRIPT -->
+<script>
+  const modal = document.getElementById("mediaModal");
+  const modalImg = document.getElementById("modalImage");
+  const modalVideo = document.getElementById("modalVideo");
+
+  document.querySelectorAll(".media-thumb").forEach(card => {
+    card.addEventListener("click", () => {
+      const type = card.dataset.type;
+
+      modalImg.style.display = "none";
+      modalVideo.style.display = "none";
+      modalVideo.pause();
+      modalVideo.src = "";
+
+      if (type === "image") {
+        modalImg.src = card.querySelector("img").src;
+        modalImg.style.display = "block";
+      }
+
+      if (type === "video") {
+        const src = card.querySelector("source").src;
+        modalVideo.src = src;
+        modalVideo.style.display = "block";
+        modalVideo.play();
+      }
+
+      modal.classList.add("active");
+    });
+  });
+
+  modal.addEventListener("click", () => {
+    modal.classList.remove("active");
+    modalVideo.pause();
+    modalVideo.src = "";
+  });
+</script>
+
+</body>
+</html>

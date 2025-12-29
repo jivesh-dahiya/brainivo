@@ -1,734 +1,845 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Brainivo – Portfolio</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brainivo | Neon Tech Studio</title>
+
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
   <style>
-    .glow-text {
-      text-shadow: 0 0 10px rgb(158, 231, 231), 0 0 20px rgb(70, 35, 243), 0 0 30px rgb(44, 71, 191);
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top, #020617, #000);
     }
 
-    /* Brand strip animation - we'll use JS instead for smoothness */
-    .brand-strip,
-    #reviews-strip-1,
-    #reviews-strip-2 {
-      white-space: nowrap;
-      will-change: transform;
-      user-select: none;
+    .neon-text {
+      text-shadow:
+        0 0 10px #22d3ee,
+        0 0 20px #22d3ee,
+        0 0 40px #0ea5e9;
     }
 
-    /* Review cards fix: prevent text overflow */
-    .review-card p {
-      font-style: italic;
-      line-height: 1.4;
-      overflow-wrap: break-word;
-      word-break: break-word;
-      white-space: normal;
+    .tool-chip {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: none;
+}
+
+.group:hover .tool-chip {
+  animation: rise 0.4s forwards;
+}
+
+@keyframes rise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+    .neon-border {
+      box-shadow:
+        0 0 15px rgba(34,211,238,0.6),
+        inset 0 0 10px rgba(34,211,238,0.3);
     }
 
-    /* Fix review card width and prevent overflow */
-    .review-card {
-      width: 320px;
-      flex-shrink: 0;
-      background-color: #1f2937; /* Tailwind gray-800 */
-      border-radius: 0.5rem;
-      padding: 1.5rem;
-      transition: transform 0.3s ease;
-      cursor: pointer;
-      color: #d1d5db; /* text-gray-300 */
-    }
-    .review-card:hover {
-      transform: scale(1.05);
-      z-index: 10;
-      background-color: #374151; /* slightly lighter */
+    .glass {
+      background: rgba(15,23,42,0.7);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(34,211,238,0.2);
     }
 
-    /* Dark mode overrides */
-    body.dark {
-      background-color: #f0f0f0;
-      color: #111827;
-    }
-    body.dark header,
-    body.dark footer {
-      background-color: #e5e7eb;
-      color: #374151;
-      border-color: #d1d5db;
-    }
-    body.dark nav a:hover {
-      color: #0284c7;
-    }
-    body.dark .bg-gray-900 {
-      background-color: #f9fafb;
-      color: #1f2937;
-    }
-    body.dark .bg-gray-800 {
-      background-color: #e5e7eb;
-      color: #374151;
-    }
-    body.dark .bg-gray-950 {
-      background-color: #f3f4f6;
-      color: #111827;
-    }
-    body.dark .text-gray-300 {
-      color: #4b5563;
-    }
-    body.dark .text-gray-400 {
-      color: #6b7280;
-    }
-    body.dark .text-cyan-400 {
-      color: #0284c7;
-      text-shadow: none;
-    }
-    body.dark .text-cyan-300 {
-      color: #0369a1;
-      text-shadow: none;
-    }
-    body.dark .filter-btn.active {
-      background-color: #0284c7;
-      color: white;
-    }
-    body.dark .bg-cyan-500 {
-      background-color: #0284c7;
-    }
-    body.dark .bg-cyan-600:hover {
-      background-color: #0369a1;
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      
     }
 
-    /* Dark mode toggle button */
-    #dark-toggle {
-      position: fixed;
-      bottom: 1rem;
-      right: 1rem;
-      background-color: #22d3ee;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 9999px;
-      font-weight: 600;
-      color: #000;
-      cursor: pointer;
-      z-index: 1000;
-      box-shadow: 0 4px 8px rgb(34 211 238 / 0.5);
-      transition: background-color 0.3s ease;
-    }
-    #dark-toggle:hover {
-      background-color: #0ea5e9;
-      color: white;
-    }
-    .work-card {
+    .media-card {
   position: relative;
   overflow: hidden;
-  border-radius: 0.75rem; /* rounded-lg */
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 1.25rem;
+  box-shadow: 0 0 25px rgba(34,211,238,0.45);
+}
+.portrait {
+  aspect-ratio: 9 / 12;   /* 1080x1920 */
 }
 
-.work-card img {
-  display: block;
+    .marquee {
+      display: flex;
+      width: max-content;
+      animation: scroll 40s linear infinite;
+    }
+
+    @keyframes scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ===== FUTURISTIC FORM ===== */
+
+.futuristic-form {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(34,211,238,0.35);
+  box-shadow:
+    0 0 40px rgba(34,211,238,0.35),
+    inset 0 0 30px rgba(34,211,238,0.15);
+}
+
+/* Input Group */
+.input-group {
+  position: relative;
+  margin-bottom: 32px;
+}
+
+.input-group input,
+.input-group textarea {
   width: 100%;
-  height: auto;
-  transition: transform 0.4s ease;
+  padding: 14px 14px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(34,211,238,0.4);
+  color: white;
+  font-size: 1rem;
+  outline: none;
 }
 
-/* Hover effects */
-.work-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 20px rgba(34, 211, 238, 0.5); /* cyan glow shadow */
+.input-group label {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  pointer-events: none;
+  transition: 0.3s ease;
+  font-size: 0.9rem;
 }
 
-.work-card:hover img {
-  transform: scale(1.1);
+/* Floating label */
+.input-group input:focus + label,
+.input-group input:valid + label,
+.input-group textarea:focus + label,
+.input-group textarea:valid + label {
+  top: -8px;
+  font-size: 0.75rem;
+  color: #22d3ee;
 }
 
-/* Optional overlay effect */
-.work-card::after {
+/* Neon underline */
+.glow-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, #22d3ee, #0ea5e9);
+  transition: 0.4s ease;
+}
+
+.input-group input:focus ~ .glow-line,
+.input-group textarea:focus ~ .glow-line {
+  width: 100%;
+  box-shadow: 0 0 15px #22d3ee;
+}
+
+/* ===== BUTTON ===== */
+.cyber-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #babad6, #6218ec);
+  color: black;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+  transition: 0.3s ease;
+}
+.cta-wrap {
+  display: flex;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.cta-btn {
+  flex: 1;
+  padding: 14px 0;
+  text-align: center;
+  font-weight: 700;
+  border-radius: 14px;
+  letter-spacing: 0.5px;
+  position: relative;
+  transition: .3s ease;
+  color: black;
+}
+
+/* WhatsApp – GREEN */
+.cta-btn.whatsapp {
+  background: linear-gradient(135deg, #22c55e, #4ade80);
+  box-shadow: 0 0 25px rgba(34,197,94,.6);
+}
+.cta-btn.whatsapp:hover {
+  box-shadow: 0 0 45px rgba(34,197,94,.9);
+  transform: translateY(-2px);
+}
+
+/* Instagram – GRADIENT */
+.cta-btn.instagram {
+  background: linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);
+  box-shadow: 0 0 25px rgba(221,42,123,.6);
+  color: white;
+}
+.cta-btn.instagram:hover {
+  box-shadow: 0 0 45px rgba(221,42,123,.9);
+  transform: translateY(-2px);
+}
+
+/* Call – BLUE */
+.cta-btn.call {
+  background: linear-gradient(135deg,#22d3ee,#0ea5e9);
+  box-shadow: 0 0 25px rgba(34,211,238,.6);
+}
+.cta-btn.call:hover {
+  box-shadow: 0 0 45px rgba(34,211,238,.9);
+  transform: translateY(-2px);
+}
+
+
+.cyber-btn::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(2, 132, 199, 0.25); /* semi-transparent cyan */
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  border-radius: 0.75rem;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: translateX(-100%);
 }
 
-.work-card:hover::after {
-  opacity: 1;
+.cyber-btn:hover::before {
+  transform: translateX(100%);
+  transition: 0.6s;
 }
+
+.cyber-btn:hover {
+  box-shadow: 0 0 30px rgba(118, 113, 180, 0.7);
+  transform: translateY(-1px);
+}
+/* ===== 3D DEPTH & HOLOGRAM EFFECT ===== */
+
+.futuristic-form {
+  transform-style: preserve-3d;
+  perspective: 1200px;
+  animation: glowPulse 4s infinite alternate;
+}
+
+/* Outer hologram border */
+.futuristic-form::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 1.6rem;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(34, 54, 238, 0.8),
+    rgba(14, 83, 233, 0.8),
+    transparent
+  );
+  filter: blur(14px);
+  opacity: 0.7;
+  z-index: -1;
+}
+/* Glass + Glow */
+.futuristic-form {
+  position: relative;
+  background:
+    linear-gradient(135deg,
+      rgba(255,255,255,0.12),
+      rgba(255,255,255,0.04)
+    );
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border-radius: 32px;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow:
+    0 40px 80px rgba(0,0,0,0.65),
+    inset 0 0 0 1px rgba(255,255,255,0.05),
+    inset 0 0 40px rgba(0,255,255,0.12);
+}
+
+
+/* Inputs */
+.input-group {
+  position: relative;
+  margin-bottom: 2rem;
+}
+.input-group input,
+.input-group textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid rgba(0,255,255,.3);
+  color: white;
+  padding: 10px 0;
+  outline: none;
+}
+.input-group label {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  color: #888;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: .3s;
+}
+.input-group input:focus + label,
+.input-group textarea:focus + label,
+.input-group input:valid + label,
+.input-group textarea:valid + label {
+  top: -10px;
+  color: #00ffff;
+  font-size: 12px;
+}
+.glow-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: #00ffff;
+  transition: .4s;
+}
+.input-group input:focus ~ .glow-line,
+.input-group textarea:focus ~ .glow-line {
+  width: 100%;
+}
+
+/* Button */
+.cyber-btn {
+  position: relative;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, #00ffff, #00aaff);
+  color: black;
+  font-weight: 800;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.cyber-btn .loader {
+  display: none;
+  width: 22px;
+  height: 22px;
+  border: 3px solid black;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+.cyber-btn.loading .btn-text { display: none; }
+.cyber-btn.loading .loader { display: inline-block; }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Scanlines */
+.scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.02) 0px,
+    rgba(255,255,255,.02) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  pointer-events: none;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  padding: 16px 22px;
+  background: #00ffff;
+  color: black;
+  font-weight: bold;
+  border-radius: 14px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: .4s;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.glass-orb {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 30% 30%,
+      rgba(174, 175, 216, 0.35),
+      rgba(5, 15, 43, 0.05)
+    );
+  backdrop-filter: blur(30px);
+  filter: blur(1px);
+  box-shadow:
+    inset -20px -20px 60px rgba(219, 214, 214, 0.2),
+    0 0 80px rgba(0,255,255,0.35);
+  animation: float 10s ease-in-out infinite;
+}
+
+.orb-1 { top: 10%; left: 15%; }
+.orb-2 { bottom: 15%; right: 10%; animation-delay: -3s; }
+.orb-3 { top: 60%; left: 3%; animation-delay: -6s; }
+
+@keyframes float {
+  0%,100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-30px) translateX(20px); }
+}
+
+
+
+/* Inner depth layer */
+.futuristic-form::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 1.6rem;
+  background: linear-gradient(
+    180deg,
+    rgba(34, 13, 151, 0.05),
+    rgba(0,0,0,0.4)
+  );
+  pointer-events: none;
+}
+
+
 
   </style>
 </head>
-<body class="bg-gray-950 text-white">
-  <!-- Navbar -->
-  <header class="fixed top-0 left-0 w-full z-50 bg-gray-950 border-b border-gray-800">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-      <h1 class="text-2xl font-bold text-cyan-400 glow-text" data-aos="fade-right">Brainivo</h1>
-      <nav class="space-x-6 text-purple-300 font-medium hidden md:flex">
-        <a href="#about" class="hover:text-purple-400">About</a>
-        <a href="#projects" class="hover:text-purple-400">Projects</a>
-        <a href="#work" class="hover:text-purple-400">Work</a>
-        <a href="#contact" class="hover:text-purple-400">Contact</a>
-      </nav>
+<body class="text-white">
+  <a href="https://wa.me/918930536252"
+   target="_blank"
+   class="fixed bottom-6 right-6 z-50
+          w-16 h-16 rounded-full bg-green-500
+          flex items-center justify-center
+          text-3xl shadow-[0_0_30px_#22c55e]
+          hover:scale-110 transition">
+  💬
+</a>
+
+
+<!-- NAVBAR -->
+<header class="fixed top-0 w-full z-50 bg-black/70 backdrop-blur border-b border-cyan-500/20">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <h1 class="font-['Orbitron'] text-xl neon-text text-cyan-400">BIVOTRO</h1>
+    <nav class="hidden md:flex space-x-8 text-gray-300">
+      <a href="#projects" class="hover:text-cyan-400">Projects</a>
+      <a href="#work" class="hover:text-cyan-400">Work</a>
+      <a href="#reviews" class="hover:text-cyan-400">Reviews</a>
+      <a href="#contact" class="hover:text-cyan-400">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="min-h-screen flex items-center justify-center text-center grid-bg pt-24">
+  <div data-aos="zoom-in">
+    <h1 class="text-5xl md:text-7xl font-extrabold neon-text font-['Orbitron']">
+      BUILDING <span class="text-cyan-400">DIGITAL FUTURES</span>
+    </h1>
+    <p class="mt-6 text-gray-300 max-w-2xl mx-auto">
+       UI/UX, Branding & Web Experiences for startups, creators & tech brands.
+    </p>
+
+    <div class="mt-10 flex justify-center gap-6">
+      <a href="#work" class="px-8 py-3 bg-cyan-500 text-black font-bold rounded-xl neon-border hover:scale-110 transition">
+        VIEW WORK
+      </a>
+      <a href="#contact" class="px-8 py-3 border border-cyan-500/40 rounded-xl hover:bg-cyan-500/10 transition">
+        START PROJECT
+      </a>
     </div>
-  </header>
+  </div>
+</section>
+<!-- REVIEWS -->
+<section id="reviews" class="py-28 grid-bg  overflow-hidden">
+  <h2 class="text-4xl font-bold text-center neon-text mb-16">CLIENT REVIEWS</h2>
 
-  <!-- Hero -->
-  <section class="h-screen flex items-center justify-center text-center px-4" id="home">
-    <div>
-      <img src="brainivo 1.png" alt="Brainivo Logo" class="mx-auto w-32 h-32 mb-4" data-aos="zoom-in" />
-      <h1 class="text-5xl font-bold text-cyan-400 glow-text mb-4" data-aos="fade-down">Brainivo</h1>
-      <p class="text-xl text-gray-300 max-w-xl mx-auto" data-aos="fade-up" data-aos-delay="200">
-        Innovative ideas. Smart solutions. Creative digital experiences.
-      </p>
+  <div class="flex  space-x-8 marquee">
+    <!-- DUPLICATE THESE FOR SMOOTH LOOP -->
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"Brainivo transformed our website completely."</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Aman Singh ★★★★★</span>
     </div>
-  </section>
 
-  <!-- About -->
-  <section class="py-20 bg-gray-900" id="about">
-    <div class="max-w-4xl mx-auto px-4 text-center" data-aos="fade-up">
-      <h2 class="text-3xl font-bold text-cyan-300 mb-4">About Brainivo</h2>
-      <p class="text-gray-300">
-        Brainivo is a forward-thinking digital portfolio that showcases creative tech projects, design experiments, and real-world problem solving. Focused on innovation and clean design.
-      </p>
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"Creative, fast & futuristic design."</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Neha tiwari ★★★★★</span>
     </div>
-  </section>
 
-  <!-- Projects -->
-  <section class="py-20" id="projects">
-    <div class="max-w-6xl mx-auto px-4">
-      <h2 class="text-3xl font-bold text-cyan-300 text-center mb-10" data-aos="fade-up">Projects</h2>
-      <div class="grid md:grid-cols-3 gap-8">
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-700 transition" data-aos="zoom-in">
-          <h3 class="text-xl font-semibold text-cyan-200">Landmark School Website</h3>
-          <p class="text-gray-400 mt-2">A site for one of Rohtak's top schools, showing hostel, meals, sports, and virtual campus tours.</p>
-        </div>
-       
-        <!-- Project 1 -->
-<div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-700 transition" data-aos="zoom-in" data-aos-delay="100">
-  <h3 class="text-xl font-semibold text-cyan-200">AI Chatbot for Coaching Institute</h3>
-  <p class="text-gray-400 mt-2">Designed a clean UI and integrated a GPT-based chatbot for a local coaching center in India. It answers student queries about classes, timings, and fees 24/7.</p>
-</div>
-
-<!-- Project 2 -->
-<div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-700 transition" data-aos="zoom-in" data-aos-delay="150">
-  <h3 class="text-xl font-semibold text-cyan-200">Brainivo Agency Portfolio Website</h3>
-  <p class="text-gray-400 mt-2">Created a modern, dark-themed responsive website to showcase Brainivo’s services, portfolio, and client testimonials using Tailwind CSS and smooth animations.</p>
-</div>
-
-<!-- Project 3 -->
-<div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-700 transition" data-aos="zoom-in" data-aos-delay="200">
-  <h3 class="text-xl font-semibold text-cyan-200">CyberSecure Login Page (UI/UX)</h3>
-  <p class="text-gray-400 mt-2">Designed and coded a secure login/register interface with animations, optimized for mobile users, for a Delhi-based cybersecurity trainer’s LMS platform.</p>
-</div>
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"Best tech design studio I worked with."</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Rajesh Kumar ★★★★</span>
+    </div>
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"Brainivo team is very kind hearted and dedicated"</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Sourav Balhara ★★★★★</span>
+    </div>
 
     <div class="glass p-6 rounded-xl neon-border w-80">
       <p class="italic">"Brainivo founder is just awesome in both work and philosophy"</p>
       <span class="block mt-4 text-cyan-400 font-semibold">Anushka Malik ★★★★★</span>
     </div>
 
-<!-- Project 5 -->
-<div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-700 transition" data-aos="zoom-in" data-aos-delay="300">
-  <h3 class="text-xl font-semibold text-cyan-200">Instagram Carousels for Ed-Tech Brand</h3>
-  <p class="text-gray-400 mt-2">Created an engaging 10-post carousel series using Canva and Photoshop to boost Instagram engagement for a Noida-based ed-tech startup. Reached over 12K users organically.</p>
-</div>
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"The most understanding and workaholic team"</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Rahul Chauhan ★★★★★</span>
+    </div>
+<div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"Brainvo team is great in creative designing"</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Alok Agarwall ★★★★★</span>
+    </div>
 
-<!-- Project 6 -->
-<div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-700 transition" data-aos="zoom-in" data-aos-delay="350">
-  <h3 class="text-xl font-semibold text-cyan-200">Motivational Poster Series: Skill > Degree</h3>
-  <p class="text-gray-400 mt-2">Designed a viral poster campaign targeted at Indian students promoting the message of “Skills Over Degrees” — featured in multiple student-led online communities.</p>
-</div>
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"I would strongly recommend you to work with Brainivo "</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Sheetal Malik ★★★★★</span>
+    </div>
 
-<!-- Project 7 -->
-<div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-700 transition" data-aos="zoom-in" data-aos-delay="400">
-  <h3 class="text-xl font-semibold text-cyan-200">Fashion E-commerce UI Concept</h3>
-  <p class="text-gray-400 mt-2">Crafted a sleek and minimalist UI concept for an Indian ethnic wear brand’s online store. Focused on clean navigation, mobile-first design, and visual storytelling.</p>
-</div>
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"Brainivo understands design beyond visuals. The final output felt modern, clean, and very professional."</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Rajesh Verma ★★★★★</span>
+    </div>
+<div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"The neon tech style was executed perfectly. Subtle, creative, and exactly what we wanted."</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Kirti Singh ★★★★★</span>
+    </div>
 
-<!-- Project 8 -->
-<div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-700 transition" data-aos="zoom-in" data-aos-delay="450">
-  <h3 class="text-xl font-semibold text-cyan-200">Responsive Pricing Table UI</h3>
-  <p class="text-gray-400 mt-2">Developed an interactive pricing table for a freelance SaaS tool using Tailwind CSS. Integrated hover effects, mobile responsiveness, and toggle views.</p>
-</div>
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"Fast delivery, clear communication, and solid design sense. Highly recommended."</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Rohit Malhotra ★★★★★</span>
+    </div>
 
-<!-- Project 9 -->
-<div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-700 transition" data-aos="zoom-in" data-aos-delay="500">
-  <h3 class="text-xl font-semibold text-cyan-200">Brand Identity Kit for Freelance Makeup Artist</h3>
-  <p class="text-gray-400 mt-2">Designed a full visual identity system including logo, font palette, social media templates, and business cards for a Delhi-based makeup artist rebranding her services.</p>
-</div>
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"Brainivo’s creative direction elevated our entire digital presence."</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Arjun Sheoran ★★★★★</span>
+    </div>
+<div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"Loved the futuristic feel without it being too flashy. Perfect balance"</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Ritika Joshi ★★★★★</span>
+    </div>
 
-<!-- Project 10 -->
-<div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-700 transition" data-aos="zoom-in" data-aos-delay="550">
-  <h3 class="text-xl font-semibold text-cyan-200">SkillUp Youth Campaign Website</h3>
-  <p class="text-gray-400 mt-2">Built a simple one-page campaign site for an initiative aimed at upskilling Indian teens with free resources. Included call-to-action, YouTube embeds, and registration form.</p>
-</div>
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"The gallery-style presentation itself shows how confident they are in their work"</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Siddharth Juluri ★★★★★</span>
+    </div>
 
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-700 transition" data-aos="zoom-in" data-aos-delay="200">
-          <h3 class="text-xl font-semibold text-cyan-200">Portfolio Redesign</h3>
-          <p class="text-gray-400 mt-2">Rebuilt personal portfolio with Tailwind and GSAP animation.</p>
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"Reliable, creative, and genuinely easy to work with."</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Pooja Nair ★★★★★</span>
+    </div>
+<div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"Every revision improved the design. They clearly care about quality"</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Aditya Rathee ★★★★★</span>
+    </div>
+
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"One of the few teams that actually listens before designing"</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Ananya Gupta ★★★★★</span>
+    </div>
+
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"Minimal explanation needed — they just got the vision"</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Vikas Lather ★★★★★</span>
+    </div>
+<div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"The final designs looked international-level. Worth it."</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Rhea Sehrawat ★★★★★</span>
+    </div>
+
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"Clean UI, strong branding, and great execution overall."</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Nitin Agarwall ★★★★★</span>
+    </div>
+
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"They don’t overdesign. Everything had a clear purpose"</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Deepak Mishra ★★★★★</span>
+    </div>
+<div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"Communication was smooth and the process was well managed."</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Mehul Yadav ★★★★★</span>
+    </div>
+
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"They understood the brief quickly and executed without confusion."</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Yash Bansal ★★★★★</span>
+    </div>
+
+    <div class="glass p-6 rounded-xl neon-border w-80">
+      <p class="italic">"Exactly the kind of modern design studio we were looking for."</p>
+      <span class="block mt-4 text-cyan-400 font-semibold">Varun Khurana ★★★★★</span>
+    </div>
+
+
+    <!-- duplicate again for infinite loop -->
+  </div>
+</section>
+
+
+<!-- WORK GALLERY -->
+<section id="work" class="py-28 grid-bg bg-black">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-4xl font-bold text-center neon-text mb-16">
+      WORK SHOWCASE
+    </h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+
+      <!-- CARD 1 -->
+      <a href="website.html"
+         class="relative group rounded-xl neon-border overflow-hidden
+                aspect-[6.6/10] block ">
+
+        <img src="7c4d2c35944aa5e33bc57486427d43a4.jpg"
+             class="absolute inset-0  w-full h-full object-cover
+                    transition duration-500 group-hover:scale-110">
+
+        <div class="absolute inset-0 bg-black/70 opacity-0
+                    group-hover:opacity-100 transition
+                    flex items-center justify-center">
+          <span class="text-cyan-400 font-bold text-lg">Website UI</span>
         </div>
+      </a>
+
+      <!-- CARD 2 -->
+      <a href="poster.html"
+         class="relative group rounded-xl neon-border overflow-hidden
+                aspect-[6.6/10] block">
+
+        <img src="28a9b2f07f547be3f2730c71ed24ef07.jpg"
+             class="absolute inset-0 w-full h-full object-fit
+                    transition duration-500 group-hover:scale-110">
+
+        <div class="absolute inset-0 bg-black/70 opacity-0
+                    group-hover:opacity-100 transition
+                    flex items-center justify-center">
+          <span class="text-cyan-400 font-bold text-lg">creatives</span>
+        </div>
+      </a>
+
+      <!-- CARD 3 -->
+      <a href="video.html"
+         class="relative group rounded-xl neon-border overflow-hidden
+                aspect-[6.6/10] block">
+
+        <video
+          class="absolute inset-0 w-full h-full object-cover"
+          autoplay muted loop>
+          <source src="de5a6799c14eb540e552a35db0590ca3.mp4" type="video/mp4">
+        </video>
+
+        <div class="absolute inset-0 bg-black/70 opacity-0
+                    group-hover:opacity-100 transition
+                    flex items-center justify-center">
+          <span class="text-cyan-400 font-bold text-lg">Video Editing</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+<!-- PROJECTS -->
+<section id="projects" class="py-28 grid-bg bg-black">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-4xl font-bold text-center neon-text mb-16">PROJECTS</h2>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- LOOP STYLE PROJECT CARDS -->
+      <div class="glass p-6 rounded-xl neon-border" data-aos="fade-up">
+        <h3 class="text-xl text-cyan-400 font-semibold">Gridaneo Bharat App</h3>
+        <p class="text-gray-400 mt-2">Girdane Bharat is a dedicated mobile application built to simplify the buying and selling of electric vehicle spare parts across India. The platform connects EV part sellers, workshops, and buyers in one place, enabling faster discovery, transparent pricing, and smoother transactions within the growing EV ecosystem.</p>
+      </div>
+
+      <div class="glass p-6 rounded-xl neon-border" data-aos="fade-up">
+        <h3 class="text-xl text-cyan-400 font-semibold">Corptube-Social Media App</h3>
+        <p class="text-gray-400 mt-2">Corptube is a purpose-built social media platform designed for founders, creators, and professionals who want to grow without distractions. The platform focuses on meaningful content, knowledge sharing, and skill-based learning, allowing users to connect, post growth-oriented content, and access practical courses in one ecosystem.</p>
+      </div>
+
+      
+
+      <div class="glass p-6 rounded-xl neon-border">
+        <h3 class="text-xl text-cyan-400 font-semibold">AUREXON – Startup Brand Logo Design</h3>
+        <p class="text-gray-400 mt-2">Designed a modern and scalable logo for AUREXON, a growing startup brand. The visual identity focuses on clean geometry, strong typography, and versatility, ensuring consistent recognition across digital platforms, marketing materials, and future brand expansions..</p>
+      </div>
+
+      <div class="glass p-6 rounded-xl neon-border">
+        <h3 class="text-xl text-cyan-400 font-semibold">BeerBiceps (Thumbnail Design)</h3>
+        <p class="text-gray-400 mt-2">Created visually striking thumbnails for long-form podcasts and motivational videos inspired by BeerBiceps’ content style. Emphasis was placed on expressive imagery, clean composition, and clear visual hierarchy for mobile-first viewing.</p>
+      </div>
+       
+       <div class="glass p-6 rounded-xl neon-border">
+        <h3 class="text-xl text-cyan-400 font-semibold">Raj Shamani Clips (Thumbnail Design)</h3>
+        <p class="text-gray-400 mt-2">Crafted thumbnails optimized for short-form business and entrepreneurial content. The designs were built to capture attention in crowded feeds using sharp typography, strong emotions, and minimal clutter.</p>
+      </div>
+       <div class="glass p-6 rounded-xl neon-border">
+        <h3 class="text-xl text-cyan-400 font-semibold">NovaGrowth – Social Media Video Editing</h3>
+        <p class="text-gray-400 mt-2">Edited high-converting short-form videos for marketing campaigns across Instagram and LinkedIn. Focused on fast hooks, clean captions, brand-aligned visuals, and platform-specific formatting to boost engagement.</p>
+      </div>
+       <div class="glass p-6 hidden rounded-xl neon-border">
+        <h3 class="text-xl text-cyan-400 font-semibold">Elevate Media – Brand Story & Promo Videos</h3>
+        <p class="text-gray-400 mt-2">Created cinematic promotional edits for client brands, including product launches and company stories. Delivered smooth transitions, color grading, music sync, and motion graphics for a premium feel.</p>
+      </div>
+       <div class="glass p-6 hidden rounded-xl neon-border">
+        <h3 class="text-xl text-cyan-400 font-semibold">UrbanEdge – Corporate & Brand Video Editing</h3>
+        <p class="text-gray-400 mt-2">Handled corporate presentation videos, internal training content, and brand promos. Maintained clean visuals, professional pacing, and consistency with brand guidelines.</p>
+      </div>
+       <div class="glass p-6 hidden rounded-xl neon-border">
+        <h3 class="text-xl text-cyan-400 font-semibold">ScaleSpark – Performance Ad Video Editing</h3>
+        <p class="text-gray-400 mt-2">Edited performance-driven ad creatives for service-based businesses. Focused on attention-grabbing openings, benefit-focused visuals, and conversion-optimized pacing.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Brand Strip -->
-  <section class="overflow-hidden bg-gray-800 py-6 relative">
-    <div id="brand-strip-1" class="brand-strip text-center text-cyan-400 font-semibold text-lg select-none">
-      <span class="inline-block mx-6">Nike</span>
-      <span class="inline-block mx-6">Adidas</span>
-      <span class="inline-block mx-6">Spotify</span>
-      <span class="inline-block mx-6">Apple</span>
-      <span class="inline-block mx-6">Samsung</span>
-      <span class="inline-block mx-6">Meta</span>
-      <span class="inline-block mx-6">Google</span>
-      <span class="inline-block mx-6">Zomato</span>
-      <span class="inline-block mx-6">Swiggy</span>
-      <span class="inline-block mx-6">Netflix</span>
+<!-- REVIEWS --
+
+
+<!-- CONTACT -->
+<section class="py-32 flex justify-center items-center grid-bg relative overflow-hidden">
+
+  <!-- Scanlines -->
+  <div class="scanlines"></div>
+
+  <form
+    action="https://formspree.io/f/xlgepjrz"
+    method="POST"
+    id="contactForm"
+    class="futuristic-form tilt relative w-full max-w-xl p-12 rounded-3xl">
+
+    <h2 class="text-3xl font-extrabold text-center neon-text mb-10 font-['Orbitron']">
+      Let’s Build Something ⚡
+    </h2>
+
+    <div class="input-group">
+      <input type="text" name="name" required />
+      <label>Your Name</label>
+      <span class="glow-line"></span>
     </div>
-    <!-- Duplicate for seamless infinite scroll -->
-    <div id="brand-strip-2" class="brand-strip text-center text-cyan-400 font-semibold text-lg select-none" style="position:absolute; top:0; left:100%;">
-      <span class="inline-block mx-6">Nike</span>
-      <span class="inline-block mx-6">Adidas</span>
-      <span class="inline-block mx-6">Spotify</span>
-      <span class="inline-block mx-6">Apple</span>
-      <span class="inline-block mx-6">Samsung</span>
-      <span class="inline-block mx-6">Meta</span>
-      <span class="inline-block mx-6">Google</span>
-      <span class="inline-block mx-6">Zomato</span>
-      <span class="inline-block mx-6">Swiggy</span>
-      <span class="inline-block mx-6">Netflix</span>
+
+    <div class="input-group">
+      <input type="email" name="email" required />
+      <label>Email Address</label>
+      <span class="glow-line"></span>
     </div>
-  </section>
 
-  <!-- Reviews Section -->
-  <section class="py-20 bg-gray-900" id="reviews">
-    <div class="max-w-6xl mx-auto px-4" data-aos="fade-up">
-      <h2 class="text-3xl font-bold text-cyan-300 mb-10 text-center">What Clients Say</h2>
-      <div class="relative overflow-hidden" style="height: 220px;">
-        <div id="reviews-strip-1" class="flex space-x-8 select-none">
-          <!-- Review Cards -->
-          <div class="review-card">
-            <p>"Brainivo transformed our website with a fresh, modern design that boosted our traffic."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★★</div>
-              <span class="text-cyan-300 font-semibold">Aman Singh</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Fast and professional. Delivered our app UI ahead of schedule."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★☆</div>
-              <span class="text-cyan-300 font-semibold">Neha Patel</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Highly recommend Brainivo for creative and clean digital solutions."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★★</div>
-              <span class="text-cyan-300 font-semibold">Rajesh Kumar</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Innovative ideas and responsive support. My go-to digital partner."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★☆</div>
-              <span class="text-cyan-300 font-semibold">Simran Kaur</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"The team understood our vision perfectly and executed flawlessly."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★★</div>
-              <span class="text-cyan-300 font-semibold">Vikram Desai</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Professional, creative, and easy to work with. Loved the results."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★★</div>
-              <span class="text-cyan-300 font-semibold">Anjali Sharma</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Delivered above expectations. Strongly recommend Brainivo!"</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★★</div>
-              <span class="text-cyan-300 font-semibold">Karan Mehta</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Great communication and creative problem-solving skills."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★☆</div>
-              <span class="text-cyan-300 font-semibold">Priya Rao</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Extremely satisfied with the branding and design work."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★★</div>
-              <span class="text-cyan-300 font-semibold">Aditya Singh</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Creative, reliable, and timely delivery every single time."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★★</div>
-              <span class="text-cyan-300 font-semibold">Sonal Verma</span>
-            </div>
-          </div>
-        </div>
-        <!-- Duplicate strip for infinite scroll -->
-        <div id="reviews-strip-2" class="flex space-x-8 select-none" style="position:absolute; top:0; left:100%;" aria-hidden="true">
-          <!-- Duplicate the same review cards -->
-          <div class="review-card">
-            <p>"Brainivo transformed our website with a fresh, modern design that boosted our traffic."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★★</div>
-              <span class="text-cyan-300 font-semibold">Aman Singh</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Fast and professional. Delivered our app UI ahead of schedule."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★☆</div>
-              <span class="text-cyan-300 font-semibold">Neha Patel</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Highly recommend Brainivo for creative and clean digital solutions."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★★</div>
-              <span class="text-cyan-300 font-semibold">Rajesh Kumar</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Innovative ideas and responsive support. My go-to digital partner."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★☆</div>
-              <span class="text-cyan-300 font-semibold">Simran Kaur</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"The team understood our vision perfectly and executed flawlessly."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★★</div>
-              <span class="text-cyan-300 font-semibold">Vikram Desai</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Professional, creative, and easy to work with. Loved the results."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★★</div>
-              <span class="text-cyan-300 font-semibold">Anjali Sharma</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Delivered above expectations. Strongly recommend Brainivo!"</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★★</div>
-              <span class="text-cyan-300 font-semibold">Karan Mehta</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Great communication and creative problem-solving skills."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★☆</div>
-              <span class="text-cyan-300 font-semibold">Priya Rao</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Extremely satisfied with the branding and design work."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★★</div>
-              <span class="text-cyan-300 font-semibold">Aditya Singh</span>
-            </div>
-          </div>
-          <div class="review-card">
-            <p>"Creative, reliable, and timely delivery every single time."</p>
-            <div class="flex items-center gap-3 mt-4">
-              <div class="text-yellow-400">★★★★★</              <span class="text-cyan-300 font-semibold">Sonal Verma</span>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="input-group">
+      <textarea name="message" rows="4" required></textarea>
+      <label>Your Vision</label>
+      <span class="glow-line"></span>
     </div>
-  </section>
+<div class="cta-wrap mt-10">
+  <a href="https://wa.me/919306671088" target="_blank" class="cta-btn whatsapp">
+    WhatsApp
+  </a>
 
-  <!-- Work Section -->
-  <section class="py-20 bg-gray-950" id="work">
-    <div class="max-w-6xl mx-auto px-4">
-      <h2 class="text-3xl font-bold text-cyan-300 mb-10 text-center" data-aos="fade-up">My Work</h2>
-      <div class="flex justify-center space-x-4 mb-12" data-aos="fade-up" data-aos-delay="100">
-        <button class="filter-btn px-4 py-2 rounded bg-cyan-500 text-white font-semibold active" data-filter="all">All</button>
-        <button class="filter-btn px-4 py-2 rounded bg-gray-700 text-gray-300 font-semibold hover:bg-cyan-500 hover:text-white" data-filter="graphic">Graphic Design</button>
-       
-        <button class="filter-btn px-4 py-2 rounded bg-gray-700 text-gray-300 font-semibold hover:bg-cyan-500 hover:text-white" data-filter="branding">Branding</button>
-      </div>
-      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-8" id="work-gallery" data-aos="fade-up" data-aos-delay="200">
-        <!-- Example cards, replace src with your images -->
-        <div class="work-card graphic rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Poster Design">
-            <img src="1.png" alt="Poster Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Poster Design</h3>
-        </div>
-        <div class="work-card graphic rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Poster Design">
-            <img src="2.png" alt="Poster Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Poster Design</h3>
-        </div>
-        <div class="work-card graphic rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Poster Design">
-            <img src="11 (1).png" alt="Poster Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Poster Design</h3>
-        </div>
-        <div class="work-card graphic rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Poster Design">
-            <img src="Untitled design.png" alt="Poster Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Poster Design</h3>
-        </div>
-        <div class="work-card graphic rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Poster Design">
-            <img src="11 (2).png" alt="Poster Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Poster Design</h3>
-        </div>
-        <div class="work-card graphic rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Poster Design">
-            <img src="11 (3).png" alt="Poster Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Poster Design</h3>
-        </div>
-        <div class="work-card graphic rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Poster Design">
-            <img src="GWAGON DESIGN.png" alt="Poster Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Poster Design</h3>
-        </div>
-        <div class="work-card graphic rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Poster Design">
-            <img src="g-class.jpg" alt="Poster Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Poster Design</h3>
-        </div>
-        <div class="work-card graphic rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Poster Design">
-            <img src="PORSCHE.png" alt="Poster Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Poster Design</h3>
-        </div>
-        <div class="work-card graphic rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="web">
-            <img src="jordan.png" alt="website design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Website Design</h3>
-        </div>
-        <div class="work-card graphic rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Website Design">
-            <img src="7ca74094038ea298a9888c912b69d0db.jpg" alt="Poster Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Website Design</h3>
-        </div>
-        <div class="work-card graphic rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Poster Design">
-            <img src="e5762283fc5b701fbbe6e9ef6b575e4c.jpg" alt="Poster Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Website Design</h3>
-        </div>
-       
-       
-        <div class="work-card branding rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Logo Design">
-            <img src="2b46e4e7534f078cf8c0fae667ae6e23.jpg" alt="Logo Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Logo Design</h3>
-        </div>
-        <div class="work-card branding rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Logo Design">
-            <img src="a702fe9352914b084df7e8c332ea02ba.jpg" alt="Logo Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Logo Design</h3>
-        </div>
-        <div class="work-card branding rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Logo Design">
-            <img src="e3eeb3270cba01b32b4c2d8382856af2.jpg" alt="Logo Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Logo Design</h3>
-        </div>
-       
-        <div class="work-card branding rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Logo Design">
-            <img src="b3a3decf05cc52ec1c535087c28c9321.jpg" alt="Logo Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center"> Thumbnail</h3>
-        </div>
-       
-        <div class="work-card branding rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Logo Design">
-            <img src="MONOPLY.png" alt="Logo Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Thumbnail </h3>
-        </div>
-        <div class="work-card branding rounded-lg overflow-hidden cursor-pointer">
-          <a href="" data-lightbox="work" data-title="Logo Design">
-            <img src="4148c6ceaa181d4442b1331b15fe233c.jpg" alt="Logo Design" class="w-full h-48 object-cover" />
-          </a>
-          <h3 class="text-cyan-300 font-semibold mt-2 text-center">Thumbnail</h3>
-        </div>
-       
-       
-  </section>
+  <a href="https://instagram.com/jivesh_dahiya" target="_blank" class="cta-btn instagram">
+    Instagram
+  </a>
 
-  <!-- Contact -->
-  <section class="py-20 bg-gray-900" id="contact">
+  <a href="tel:+919991018621" class="cta-btn call ">
+    Call Now
+  </a>
+</div>
+
+    <button type="submit" class="cyber-btn mt-10">
+      <span class="btn-text">Send Signal 🚀</span>
+      <span class="loader"></span>
+    </button>
+    
+  </form>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+  <div class="glass-orb orb-1"></div>
+   <div class="glass-orb orb-2"></div>
+    <div class="glass-orb orb-3"></div>
+
+</section>
+
   
-    <div class="max-w-4xl mx-auto px-4" data-aos="fade-up">
-      <h2 class="text-3xl font-bold text-cyan-300 mb-6 text-center">Get in Touch</h2>
-      <form action="https://formspree.io/f/manjzeov" method="POST" class="space-y-6 bg-gray-900/70 backdrop-blur p-6 rounded-2xl shadow-2xl border border-cyan-500/20">
+</section>
+
 
  
 
-  <!-- Name -->
-  <div>
-    <label for="name" class="block text-sm font-medium text-cyan-300 mb-1">Your Name</label>
-    <input type="text" name="name" id="name" required
-      class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-cyan-500/30 focus:ring-2 focus:ring-cyan-500 focus:outline-none shadow-[0_0_10px_rgba(0,255,255,0.2)] transition" />
-  </div>
+  
+</section>
 
-  <!-- Email -->
-  <div>
-    <label for="email" class="block text-sm font-medium text-cyan-300 mb-1">Your Email</label>
-    <input type="email" name="email" id="email" required
-      class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-cyan-500/30 focus:ring-2 focus:ring-cyan-500 focus:outline-none shadow-[0_0_10px_rgba(0,255,255,0.2)] transition" />
-  </div>
+<footer class="py-6 text-center text-gray-500 border-t border-cyan-500/20">
+  © 2025 Bivotro  — THe digital Future Agency
+</footer>
 
-  <!-- Subject -->
-  <div>
-    <label for="subject" class="block text-sm font-medium text-cyan-300 mb-1">Subject</label>
-    <input type="text" name="subject" id="subject"
-      class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-cyan-500/30 focus:ring-2 focus:ring-cyan-500 focus:outline-none shadow-[0_0_10px_rgba(0,255,255,0.2)] transition" />
-  </div>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init({ once: true });</script>
+<script>
+/* 3D Tilt */
+const tilt = document.querySelector('.tilt');
+tilt.addEventListener('mousemove', e => {
+  const rect = tilt.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const rx = -(y / rect.height - 0.5) * 10;
+  const ry = (x / rect.width - 0.5) * 10;
+  tilt.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+});
+tilt.addEventListener('mouseleave', () => {
+  tilt.style.transform = 'rotateX(0) rotateY(0)';
+});
 
-  <!-- Phone -->
-  <div>
-    <label for="phone" class="block text-sm font-medium text-cyan-300 mb-1">Phone (optional)</label>
-    <input type="tel" name="phone" id="phone"
-      class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-cyan-500/30 focus:ring-2 focus:ring-cyan-500 focus:outline-none shadow-[0_0_10px_rgba(0,255,255,0.2)] transition" />
-  </div>
+/* Form Submit */
+const form = document.getElementById('contactForm');
+const btn = form.querySelector('.cyber-btn');
+const toast = document.getElementById('toast');
 
-  <!-- Message -->
-  <div>
-    <label for="message" class="block text-sm font-medium text-cyan-300 mb-1">Your Message</label>
-    <textarea name="message" id="message" rows="5" required
-      class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-cyan-500/30 focus:ring-2 focus:ring-cyan-500 focus:outline-none shadow-[0_0_10px_rgba(0,255,255,0.2)] transition"></textarea>
-  </div>
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  btn.classList.add('loading');
 
-  <!-- Submit Button -->
-  <button type="submit"
-    class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-6 rounded-lg shadow-[0_0_15px_rgba(0,255,255,0.6)] hover:shadow-[0_0_25px_rgba(0,255,255,0.8)] transition-all duration-300">
-    🚀 Send Message
-  </button>
+  const res = await fetch(form.action, {
+    method: 'POST',
+    body: new FormData(form),
+    headers: { Accept: 'application/json' }
+  });
 
-</form>
+  btn.classList.remove('loading');
 
-  </section>
+  if (res.ok) {
+    form.reset();
+    showToast('🚀 Message Sent Successfully!');
+  } else {
+    showToast('❌ Something went wrong!');
+  }
+});
 
-  <!-- Footer -->
-  <footer class="bg-gray-950 text-gray-400 py-8 text-center">
-    <p>&copy; 2025 Brainivo. All rights reserved.</p>
-  </footer>
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}
+</script>
 
-  <!-- Dark Mode Toggle -->
-  <button id="dark-toggle" aria-label="Toggle Dark Mode">Toggle Mode</button>
-
-  <!-- Scripts -->
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
-  <script>
-    AOS.init();
-
-    // Dark mode toggle
-    const darkToggle = document.getElementById('dark-toggle');
-    darkToggle.addEventListener('click', () => {
-      document.body.classList.toggle('dark');
-      // Update button text accordingly
-      darkToggle.textContent = document.body.classList.contains('dark') ? 'Light Mode' : 'Dark Mode';
-    });
-
-    // Brand strip infinite scroll
-    const brandStrip1 = document.getElementById('brand-strip-1');
-    const brandStrip2 = document.getElementById('brand-strip-2');
-    let brandX1 = 0;
-    let brandX2 = brandStrip1.offsetWidth;
-    const brandSpeed = 0.5;
-
-    function animateBrandStrip() {
-      brandX1 -= brandSpeed;
-      brandX2 -= brandSpeed;
-
-      if (brandX1 <= -brandStrip1.offsetWidth) brandX1 = brandStrip2.offsetWidth;
-      if (brandX2 <= -brandStrip2.offsetWidth) brandX2 = brandStrip1.offsetWidth;
-
-      brandStrip1.style.transform = `translateX(${brandX1}px)`;
-      brandStrip2.style.transform = `translateX(${brandX2}px)`;
-
-      requestAnimationFrame(animateBrandStrip);
-    }
-    animateBrandStrip();
-
-    // Reviews strip infinite scroll
-    const reviewsStrip1 = document.getElementById('reviews-strip-1');
-    const reviewsStrip2 = document.getElementById('reviews-strip-2');
-    let revX1 = 0;
-    let revX2 = reviewsStrip1.offsetWidth;
-    const revSpeed = 0.3;
-
-    function animateReviewsStrip() {
-      revX1 -= revSpeed;
-      revX2 -= revSpeed;
-
-      if (revX1 <= -reviewsStrip1.offsetWidth) revX1 = reviewsStrip2.offsetWidth;
-      if (revX2 <= -reviewsStrip2.offsetWidth) revX2 = reviewsStrip1.offsetWidth;
-
-      reviewsStrip1.style.transform = `translateX(${revX1}px)`;
-      reviewsStrip2.style.transform = `translateX(${revX2}px)`;
-
-      requestAnimationFrame(animateReviewsStrip);
-    }
-    animateReviewsStrip();
-
-    // Work filter buttons
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const workCards = document.querySelectorAll('.work-card');
-
-    filterButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        // Remove active from all buttons
-        filterButtons.forEach(btn => btn.classList.remove('active'));
-        // Add active to clicked button
-        button.classList.add('active');
-
-        const filter = button.getAttribute('data-filter');
-
-        workCards.forEach(card => {
-          if (filter === 'all') {
-            card.style.display = 'block';
-          } else {
-            if (card.classList.contains(filter)) {
-              card.style.display = 'block';
-            } else {
-              card.style.display = 'none';
-            }
-          }
-        });
-      });
-    });
-  </script>
 </body>
 </html>
-
